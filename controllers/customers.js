@@ -1,23 +1,23 @@
 // import model
-const { Op } = require("sequelize");
-const { Customer } = require("../models");
-const { FormatPagination } = require("../utils/format-pagination");
+const { Op } = require('sequelize');
+const { Customer } = require('../models');
+const { FormatPagination } = require('../utils/format-pagination');
 const {
   formulaPaginationOffsetLimit,
-} = require("../utils/formula-pagination-offset-limit");
+} = require('../utils/formula-pagination-offset-limit');
 
 class CustomerController {
   static async findAll(req, res) {
-    const { limit, page, keyword = "", sortOrder = [] } = req.query;
+    const { limit = 10, page = 0, keyword = '', sortOrder = [] } = req.query;
 
     let condition = {};
-    if (keyword !== "") {
+    if (keyword !== '') {
       condition = { ...condition, name: { [Op.like]: `%${keyword}%` } };
     }
 
     let convertSortOrder = [];
     sortOrder.forEach((sO) => {
-      convertSortOrder.push([sO.split(" ")[0], sO.split(" ")[1]]);
+      convertSortOrder.push([sO.split(' ')[0], sO.split(' ')[1]]);
     });
 
     const { offset, limitData } = formulaPaginationOffsetLimit(page, limit);
@@ -35,7 +35,7 @@ class CustomerController {
 
     return res
       .status(200)
-      .json({ status: "success", data: customers, total, pages });
+      .json({ status: 'success', data: customers, total, pages });
   }
 
   static async create(req, res) {
@@ -43,7 +43,7 @@ class CustomerController {
 
     const findCustomer = await Customer.findOne({ where: { email } });
 
-    if (findCustomer) res.json({ message: "DUPLICATE_EMAIL" });
+    if (findCustomer) res.json({ message: 'DUPLICATE_EMAIL' });
 
     await Customer.create({
       name,
@@ -54,7 +54,7 @@ class CustomerController {
 
     return res
       .status(201)
-      .json({ status: "success", message: "Success save customer" });
+      .json({ status: 'success', message: 'Success save customer' });
   }
 
   static async findById(req, res) {
@@ -62,15 +62,15 @@ class CustomerController {
     const customer = await Customer.findOne({
       where: { id },
     });
-    if (!customer) res.json({ message: "CUSTOMER_NOT_FOUND" });
-    return res.status(200).json({ status: "success", data: customer });
+    if (!customer) res.json({ message: 'CUSTOMER_NOT_FOUND' });
+    return res.status(200).json({ status: 'success', data: customer });
   }
 
   static async update(req, res) {
     const { id } = req.params;
     const findCustomer = await Customer.findOne({ where: { id } });
 
-    if (!findCustomer) res.json({ message: "CUSTOMER_NOT_FOUND" });
+    if (!findCustomer) res.json({ message: 'CUSTOMER_NOT_FOUND' });
 
     const { name, phone, email, address } = req.body;
 
@@ -88,7 +88,7 @@ class CustomerController {
       address: findCustomer.address,
     };
 
-    return res.status(201).json({ status: "success", data: response });
+    return res.status(201).json({ status: 'success', data: response });
   }
 
   static async delete(req, res) {
@@ -98,11 +98,11 @@ class CustomerController {
       where: { id },
     });
 
-    if (!findCustomer) res.json({ message: "CUSTOMER_NOT_FOUND" });
+    if (!findCustomer) res.json({ message: 'CUSTOMER_NOT_FOUND' });
 
     await findCustomer.destroy();
 
-    return res.status(200).json({ status: "success", message: "Deleted" });
+    return res.status(200).json({ status: 'success', message: 'Deleted' });
   }
 }
 

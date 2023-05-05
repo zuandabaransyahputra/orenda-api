@@ -1,12 +1,9 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
-const customerController = require("../controllers/customers");
+const { create, findAll } = require('../controllers/orders');
 
 /* GET users listing. */
-router.get("/", customerController.findAll);
-router.post("/", customerController.create);
-router.get("/:id", customerController.findById);
-router.put("/:id", customerController.update);
-router.delete("/:id", customerController.delete);
+router.get('/', findAll);
+router.post('/', create);
 
 module.exports = router;
